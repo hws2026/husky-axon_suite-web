@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "node tests/check-dashboard.cjs && node tests/check-watermark.cjs",
-    "preview:sync": "node sync/server.mjs --demo"
+    "test": "node tests/check-dashboard.cjs && node tests/check-watermark.cjs && node tests/check-access.mjs",
+    "preview:sync": "node sync/server.mjs --demo",
+    "setup:web": "node web/setup.mjs",
+    "start:web": "node --env-file=.env web/server.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.6"
   }
 }

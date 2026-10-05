@@ -1,0 +1,74 @@
+DISCORD-ONLY PORTAL — OWNER SETUP
+
+Use Node 20.6+ (Node 22+ recommended). No npm dependencies required.
+1. Create an application at https://discord.com/developers/applications.
+2. Enable Developer Mode in Discord to copy your server, user and role IDs.
+3. From the github folder run npm run setup:web. The wizard creates .env and
+   web/access.json, agency mappings and your owner access. It prints callback
+   and application-settings links. It never accepts or prints the secret.
+4. Register its exact callback URL in the application's OAuth2 redirects.
+5. Put the application's client secret into .env on your host. Never commit it.
+6. Run npm run start:web. For production put a HTTPS reverse proxy in front of
+   loopback port 8790 and preserve the public Host header. PUBLIC_URL must match.
+   Local testing: PUBLIC_URL=http://localhost:8790; register the same callback.
+
+Authentication uses authorization-code OAuth with identify and guilds.members.read.
+There is no local username/password registration or password login. Discord itself
+may ask a user to sign in. No bot token or bot installation is needed to read the
+signed-in member's roles. A bot for notifications would be a separate future feature.
+Non-members and members with no mapped roles are denied. Overall admins must also
+be members. An overall owner ID bootstraps role configuration without a bot.
+
+The backend has a one-use five-minute OAuth state cookie, random server-side
+sessions, HttpOnly SameSite cookies (Secure on HTTPS), an exact callback, host
+checks and origin-checked logout. Sessions expire after at most one hour; restart
+logs everyone out. Discord membership/roles are rechecked on protected requests;
+failures deny access. Secrets and OAuth tokens are never sent to the browser.
+Sessions are in memory; scaling and durable session storage are not implemented.
+
+This service protects /dashboard and /api/me. Its dashboard is a connection/access
+shell. It intentionally does not serve the editable sample dashboard, demo sync,
+recordings or camera APIs. Production scoped data endpoints, officer ownership
+checks, admin mutation authorization, realtime transport and recording backend
+still need implementation before connecting live evidence. Frontend role selection
+is not an authorization boundary. Do not publish the demo sync service as a portal.
+
+GitHub stores source. GitHub Pages is static and cannot run this Node backend.
+Deploy on a Node-capable server. Never put secrets in client HTML or JavaScript.
+The wizard cannot automatically create a Discord application, retrieve its secret,
+or register redirects without the owner completing those steps in Discord.
+
+Reference: https://discord.com/developers/docs/topics/oauth2
+
+TROUBLESHOOTING AND FIRST LOGIN
+
+Invalid redirect_uri: compare scheme, hostname, port and full callback path.
+Use PUBLIC_URL + /auth/discord/callback exactly, with no extra trailing slash.
+Missing configuration: run the wizard from the GitHub root. It will not overwrite
+an existing .env or access.json. Edit existing files directly instead.
+No authorized role: ensure the user is in DISCORD_GUILD_ID and their role ID is
+in the intended agency mapping. Names are labels; IDs control access.
+Owner denied: the owner ID must be their Discord user ID, not a role ID, and
+the owner must belong to the configured server.
+Login unavailable: check client ID/secret, expired authorization and Discord
+availability. Do not paste tokens into logs or browser panels.
+Invalid host: set the reverse proxy Host to the PUBLIC_URL hostname and port.
+Session vanished: sessions are temporary and restart clears them. Sign in again.
+Panel preview settings: UI agency edits currently save demo snapshots only;
+edit web/access.json for website authorization and restart Node.
+
+VERIFY BEFORE CONNECTING REAL DATA
+Test an owner, an officer assigned to one agency, a dispatcher, an unmapped
+member, and a non-member. Remove a role and verify the protected portal denies
+the next request when no other mapped role remains. Confirm logout redirects
+to the login page and /api/me responds 401 when signed out. Discord OAuth needs
+real credentials for these checks; they have not been run against your server.
+Source-level access-policy tests are available with npm test.
+
+FIVEM AND MODELS
+Copy fivem/husky-axon_suite into resources and add ensure husky-axon_suite.
+For the optional male BODY 4 clothing add-on, also install axonbody4addon and
+ensure axonbody4addon first. See its credits/install file. Inventory equip,
+female models, FLEET 3 models, recording and live media integration are pending.
+No SQL is needed for this login shell. Production evidence persistence and
+scoped synchronization remain separate work; demo sync is not production sync.

@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import { agencyAccess,validateAccessConfig } from '../web/access.mjs';
+const config=validateAccessConfig({overallAdminIds:['111111111111111111'],overallAdminRoles:[],agencies:[{id:'lspd',name:'Police',roles:{supervisor:['222222222222222222'],officer:['333333333333333333']}},{id:'bcso',name:'Sheriff',roles:{dispatcher:['444444444444444444']}},{id:'archived',name:'Removed',enabled:false,roles:{officer:['333333333333333333']}}]});
+assert.equal(agencyAccess('999999999999999999',[],config).allowed,false);
+assert.deepEqual(agencyAccess('999999999999999999',['333333333333333333'],config).agencies.map(a=>a.id),['lspd']);
+assert.equal(agencyAccess('999999999999999999',['222222222222222222','333333333333333333'],config).agencies[0].role,'supervisor');
+assert.equal(agencyAccess('111111111111111111',[],config).overallAdmin,true);
+assert.throws(()=>validateAccessConfig({...config,overallAdminRoles:['invalid']}));
+assert.throws(()=>validateAccessConfig({...config,agencies:[config.agencies[0],config.agencies[0]]}));
+console.log('Passed Discord access checks: deny unmapped, agency scopes, disabled agencies, role precedence, owner and config validation.');
