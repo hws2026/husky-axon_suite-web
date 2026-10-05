@@ -1,0 +1,23 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+const nodes=new Map();
+function node(key){if(!nodes.has(key))nodes.set(key,{value:'',innerHTML:'',textContent:'',open:false,classList:{add(){},remove(){},toggle(){}},addEventListener(){},close(){this.open=false},showModal(){this.open=true},style:{}});return nodes.get(key)}
+const nav=['overview','live','recordings','devices','equipment','activity','admin'].map(page=>({...node('nav-'+page),dataset:{page}}));
+const storage=new Map();
+const context=vm.createContext({document:{querySelector:node,querySelectorAll:()=>nav,addEventListener(){}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},window:{addEventListener(){}},setTimeout:()=>0,clearTimeout(){},console,Date,Math,structuredClone});
+for(const file of ['watermark.js','equipment.js','media-contract.js','policy.js','app.js'])vm.runInContext(fs.readFileSync('html/'+file,'utf8'),context);
+const run=code=>vm.runInContext(code,context);
+assert.equal(run('visible(cameras).length'),2);
+run("role='officer';agency='bcso';render()");assert.equal(run('agency'),'lspd');assert.equal(run('visible(recordings).length'),2);
+run("role='agencyadmin';agency='all';page='admin';render()");assert.equal(run('agency'),'lspd');assert.equal(run('managedAgencies().length'),1);assert(!node('#body').innerHTML.includes('id="addAgency"'));
+run("role='admin';agency='all';render()");assert.equal(run('visible(cameras).length'),6);assert(node('#body').innerHTML.includes('id="addAgency"'));
+run("role='dispatcher';agency='lspd';page='recordings';render()");assert.equal(run('page'),'live');assert.equal(run('visible(recordings).length'),0);
+run("agencies[0].dispatcherArchive=true;page='recordings';render()");assert.equal(run('page'),'recordings');assert.equal(run('visible(recordings).length'),2);
+assert.equal(run('CameraPolicy.canDownload(role,recordings[0],agencies[0])'),false);
+run('agencies[0].dispatcherDownloads=true');assert.equal(run('CameraPolicy.canDownload(role,recordings[0],agencies[0])'),true);
+run('agencies[0].downloads=false');assert.equal(run('CameraPolicy.canDownload(role,recordings[0],agencies[0])'),false);
+run("role='officer';agencies[0].fleet=false;render()");assert.equal(run('visible(cameras).length'),1);
+run("agencies[0].enabled=false;render()");assert.equal(run('visible(cameras).length'),0);assert.equal(run('visible(recordings).length'),0);
+run("role='admin';agency='all';page='activity';render()");assert(node('#body').innerHTML.includes('Local preview history'));
+run("agencies[0].name='<img src=x onerror=alert(1)>';page='admin';render()");assert(node('#body').innerHTML.includes('&lt;img'));assert(!node('#body').innerHTML.includes('<img src=x'));
+run("role='admin';agencies[0].archived=true;agency='all';render()");assert.equal(run('visible(cameras).some(c=>c.agency==="lspd")'),false);assert(node('#body').innerHTML.includes('Restore agency'));run("agencies[0].archived=false;agencies[0].enabled=true;agencies[0].fleet=true;page='equipment';render()");assert(node('#body').innerHTML.includes('Vehicle mounting presets'));
+console.log('Passed preview checks: agency scopes, role access, archive/download gates, device toggles, activity view, escaped agency names.');

@@ -1,0 +1,12 @@
+{
+  "name": "husky-axon-suite",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/check-dashboard.cjs && node tests/check-watermark.cjs",
+    "preview:sync": "node sync/server.mjs --demo"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

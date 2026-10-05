@@ -1,0 +1,39 @@
+{
+  "status": "design_requirements_only_no_capture_backend",
+  "archive": {
+    "width": 3840,
+    "height": 2160,
+    "fps": 30,
+    "nativeResolutionRequired": true,
+    "allowUpscalingToClaim4K": false,
+    "mountedCameraPovRequired": true,
+    "gameplayAudioRequired": true,
+    "voiceChatCaptureMustBeValidated": true,
+    "separateMicrophoneIsNotGameAudio": true,
+    "audioSampleRate": 48000,
+    "avSync": {
+      "clock": "shared-monotonic",
+      "timestampVideoFrames": true,
+      "timestampAudioSamples": true,
+      "continuousMonitoringRequired": true,
+      "maxAbsoluteDriftMs": 50,
+      "onFailure": "flag_recording_invalid_for_normal_export_keep_failed_artifact_for_diagnosis",
+      "containerFinalizationRequired": true,
+      "playbackSeekVerificationRequired": true
+    }
+  },
+  "livePreview": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "gameplayAudioRequired": true
+  },
+  "performance": {
+    "hardwareEncodingPreferred": true,
+    "boundedQueuesRequired": true,
+    "videoTransport": "dedicated_media_transport_not_fivem_net_events",
+    "onArchiveQualityOrAudioFailure": "show_capture_error_never_claim_success",
+    "zeroLagGuaranteed": false,
+    "qualityPreset": "highest_sustainable_native_4k_profile_verified_on_target_hardware"
+  }
+}

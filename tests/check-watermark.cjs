@@ -1,0 +1,13 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+let elapsed=100;const context=vm.createContext({performance:{now:()=>elapsed},Date,Number,String});
+vm.runInContext(fs.readFileSync('html/watermark.js','utf8'),context);
+const run=code=>vm.runInContext(code,context);
+assert.match(run('HuskyWatermark.timestamp()'),/awaiting FiveM/);
+run("HuskyWatermark.receive({unixSeconds:1791201600,displayTime:'2026-10-05 12:00:00',zone:'EDT',offset:'-0400'})");
+assert.equal(run('HuskyWatermark.timestamp()'),'2026-10-05 12:00:00-04:00');
+elapsed+=2100;
+assert.equal(run('HuskyWatermark.timestamp()'),'2026-10-05 12:00:02-04:00');
+const lines=run("HuskyWatermark.lines({type:'BODY 4',id:'B4-0241',name:'Officer'},'LSPD',{agencyLabel:true,officerLabel:true})");
+assert.equal(lines[1],'AXON BODY 4 B4-0241');assert.equal(lines[2],'LSPD');assert.equal(lines[3],'Officer');
+elapsed+=16000;assert.match(run('HuskyWatermark.timestamp()'),/stale/);
+console.log('Passed server watermark checks: server calendar, elapsed time, serial, labels, missing and stale clock.');

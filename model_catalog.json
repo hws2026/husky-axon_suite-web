@@ -1,0 +1,16 @@
+{
+  "body4": {
+    "resource": "axonbody4addon",
+    "collection": "mp_m_freemode_01_axonbody4addon",
+    "ped": "mp_m_freemode_01",
+    "kind": "clothing",
+    "component": 1,
+    "textures": 5,
+    "femaleAvailable": false,
+    "inventoryWired": false,
+    "source": "https://www.lcpdfr.com/downloads/gta5mods/character/51844-lapd-axon-body-4/"
+  },
+  "fleet3": {
+    "installed": false
+  }
+}
