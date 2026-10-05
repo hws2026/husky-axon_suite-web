@@ -4,7 +4,7 @@ function node(key){if(!nodes.has(key))nodes.set(key,{value:'',innerHTML:'',textC
 const nav=['overview','live','recordings','devices','equipment','activity','admin'].map(page=>({...node('nav-'+page),dataset:{page}}));
 const storage=new Map();
 const context=vm.createContext({document:{querySelector:node,querySelectorAll:()=>nav,addEventListener(){}},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},window:{addEventListener(){}},setTimeout:()=>0,clearTimeout(){},console,Date,Math,structuredClone});
-for(const file of ['watermark.js','equipment.js','media-contract.js','policy.js','app.js'])vm.runInContext(fs.readFileSync('html/'+file,'utf8'),context);
+for(const file of ['watermark.js','equipment.js','media-contract.js','policy.js','app.js'])vm.runInContext(fs.readFileSync(''+file,'utf8'),context);
 const run=code=>vm.runInContext(code,context);
 assert.equal(run('visible(cameras).length'),2);
 run("role='officer';agency='bcso';render()");assert.equal(run('agency'),'lspd');assert.equal(run('visible(recordings).length'),2);

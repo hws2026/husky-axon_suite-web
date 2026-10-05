@@ -54,7 +54,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (req.method === 'GET' && assets.has(url.pathname)) {
       const asset = assets.get(url.pathname);
-      const file = fileURLToPath(new URL(`../html/${asset}`, import.meta.url));
+      const file = fileURLToPath(new URL(`../${asset}`, import.meta.url));
       res.writeHead(200, { 'Content-Type': contentTypes[asset.split('.').pop()], 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
       res.end(await readFile(file));
       return;

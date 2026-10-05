@@ -1,6 +1,6 @@
 AXON camera operations — standalone UI starter
 
-Open html/index.html in a browser to preview. No build tools needed.
+Open index.html in a browser to preview. No build tools needed.
 For FiveM: copy husky-axon_suite to your resources folder, add `ensure husky-axon_suite`
 to server.cfg, then use /camera. Escape closes the dashboard.
 
@@ -132,7 +132,7 @@ changes. During video frame drops preserve elapsed timestamps; do not compress
 video time while audio continues. Finalize the container and verify real exported
 files before reporting success. Preserve failed captures for diagnosis with an
 explicit warning instead of presenting them as normal validated evidence.
-html/media-contract.js validates diagnostic reports from a future backend. It
+repository-root assets/media-contract.js validates diagnostic reports from a future backend. It
 does not generate, probe, encode or independently verify a recording. Current UI
 readiness remains unverified, and sample entries still have no audio/video files.
 

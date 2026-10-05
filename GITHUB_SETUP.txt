@@ -2,10 +2,18 @@ HUSKY AXON SUITE — GITHUB PROJECT
 
 Upload the contents of this folder as your repository root. No repository has
 been published by this package. Use Node 20+ and npm test for logic checks.
-No dependency installation is needed. Open html/index.html for the UI preview.
+No dependency installation is needed. Open index.html for the UI preview.
 For local sample-data sync, run npm run preview:sync and visit
 http://127.0.0.1:8787. This is a loopback sample service, not production hosting.
 
 fxmanifest.lua is the FiveM resource manifest. tests/ and package.json are
 repository tooling. Choose your own license before publishing; no license
 is assigned automatically. See README.txt for integration limitations.
+
+ROOT-LEVEL WEBSITE LAYOUT
+index.html, style.css, app.js and supporting UI scripts are at the repository
+root. Upload the CONTENTS of github/, not the github folder itself. For GitHub
+Pages choose the publishing branch and / (root). No asset rearranging needed.
+GitHub Pages serves the sample dashboard only. It cannot run the Discord login
+backend. Deploy the Node service for Discord-only authentication; do not treat
+the public sample dashboard as the secure dispatcher portal.
